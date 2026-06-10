@@ -1,10 +1,10 @@
 {
   "name": "my-error-book",
   "private": true,
-  "workspaces": [
-    "apps/web"
-  ],
+  "packageManager": "pnpm@10.25.0",
   "scripts": {
-    "test:web": "node apps/web/scripts/smoke-test.mjs"
+    "test:web": "node apps/web/scripts/smoke-test.mjs",
+    "dev:web": "pnpm --filter @my-error-book/web dev",
+    "build:web": "pnpm --filter @my-error-book/web build"
   }
 }
