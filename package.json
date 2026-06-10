@@ -1,0 +1,10 @@
+{
+  "name": "my-error-book",
+  "private": true,
+  "workspaces": [
+    "apps/web"
+  ],
+  "scripts": {
+    "test:web": "node apps/web/scripts/smoke-test.mjs"
+  }
+}
