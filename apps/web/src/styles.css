@@ -216,6 +216,92 @@ textarea {
   min-height: 130px;
 }
 
+.answer-pad {
+  display: block;
+  border: 1px solid #cfd6e2;
+  border-radius: 8px;
+  padding: 14px;
+  background: white;
+  color: #172033;
+  line-height: 1.5;
+}
+
+.answer-pad:focus-within {
+  border-color: #172033;
+  box-shadow: 0 0 0 3px rgba(23, 32, 51, 0.08);
+}
+
+.answer-editor {
+  display: grid;
+  gap: 10px;
+}
+
+.latex-source {
+  display: grid;
+  gap: 6px;
+  color: #41546f;
+  font-size: 13px;
+}
+
+.latex-source-input {
+  min-height: 72px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+  background: #fbfcfe;
+}
+
+.scratch-pad {
+  min-width: 0;
+}
+
+.scratch-pad-header {
+  display: grid;
+  gap: 12px;
+}
+
+.scratch-pad-header h2 {
+  margin-bottom: 4px;
+}
+
+.scratch-pad-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.scratch-pad-actions button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid #cfd6e2;
+  background: white;
+  border-radius: 6px;
+  padding: 7px 9px;
+  cursor: pointer;
+  color: #27364d;
+  font-size: 13px;
+}
+
+.scratch-pad-actions button:hover,
+.scratch-pad-actions button.active-tool {
+  border-color: #172033;
+  background: #eef1f5;
+}
+
+.scratch-pad.fullscreen {
+  position: fixed;
+  inset: 16px;
+  z-index: 30;
+  border: 1px solid #cfd6e2;
+  border-radius: 8px;
+  box-shadow: 0 24px 72px rgba(15, 23, 42, 0.24);
+  background: #f8fafc;
+  padding: 18px;
+}
+
+.scratch-pad.fullscreen .sketch-stage {
+  min-height: calc(100vh - 150px);
+}
+
 .math-toolbar {
   border: 1px solid #e2e7ef;
   background: #f8fafc;
@@ -285,12 +371,27 @@ textarea {
 .draft-panel {
   border-width: 0 0 0 1px;
   padding: 20px;
+  min-height: 100vh;
 }
 
-.draft-panel textarea {
+.draft-panel .sketch-stage {
   width: 100%;
-  min-height: calc(100vh - 148px);
+  min-height: calc(100vh - 172px);
+  height: calc(100vh - 172px);
   background: #fffdf7;
+  border: 1px solid #d9dee8;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.draft-canvas {
+  display: block;
+  transform: scale(var(--scratch-zoom));
+  transform-origin: 0 0;
+}
+
+.draft-canvas svg {
+  touch-action: none;
 }
 
 @media (max-width: 980px) {
@@ -319,5 +420,10 @@ textarea {
 
   .draft-panel textarea {
     min-height: 140px;
+  }
+
+  .draft-panel .sketch-stage {
+    height: 132px;
+    min-height: 132px;
   }
 }

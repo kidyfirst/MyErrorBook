@@ -10,6 +10,7 @@ import {
   LogIn,
   Shield,
 } from 'lucide-react'
+import { ScratchPad } from './components/ScratchPad.jsx'
 
 const API = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080'
 
@@ -24,18 +25,6 @@ const defaultSuggestion = {
   provinceId: 'guangdong',
   knowledgePointIds: ['kp-addition'],
 }
-
-const mathSnippets = [
-  { label: '分数', value: '\\frac{}{}' },
-  { label: '根号', value: '\\sqrt{}' },
-  { label: '上标', value: '^{}' },
-  { label: '下标', value: '_{}' },
-  { label: '积分', value: '\\int_{}^{}' },
-  { label: '求和', value: '\\sum_{}^{}' },
-  { label: 'π', value: '\\pi' },
-  { label: 'θ', value: '\\theta' },
-  { label: '公式块', value: '$$\n\n$$' },
-]
 
 async function request(path, options = {}) {
   const res = await fetch(`${API}${path}`, {
@@ -142,15 +131,6 @@ export function App() {
     setFeedback(result)
     setDaily(result.item)
     await refreshData(userId)
-  }
-
-  function insertMathSnippet(target, snippet) {
-    const withSpace = snippet.startsWith('$$') ? snippet : `$${snippet}$`
-    if (target === 'draft') {
-      setDraft((current) => `${current}${current ? ' ' : ''}${withSpace}`)
-      return
-    }
-    setAnswer((current) => `${current}${current ? ' ' : ''}${withSpace}`)
   }
 
   return (
@@ -285,12 +265,13 @@ export function App() {
             {daily ? (
               <>
                 <p className="question-text">{daily.questionText}</p>
-                <MathToolbar onInsert={(snippet) => insertMathSnippet('answer', snippet)} />
-                <textarea
-                  className="answer-input"
-                  placeholder="在这里输入你的答案，可使用 LaTeX：例如 $\\frac{1}{2}$、$x^2$"
+                <ScratchPad
+                  purpose="answer"
+                  title="答题区"
+                  description="支持键盘输入、LaTeX 数学表达式和快捷公式按钮。"
                   value={answer}
-                  onChange={(e) => setAnswer(e.target.value)}
+                  onChange={setAnswer}
+                  placeholder="输入答案，例如 \\frac{1}{2}、x^2、\\sqrt{3}"
                 />
                 <button className="primary" onClick={submitAnswer}>提交批改</button>
                 {feedback && (
@@ -332,31 +313,15 @@ export function App() {
         )}
       </main>
 
-      <aside className="draft-panel">
-        <h2>草稿区</h2>
-        <p>记录思路、步骤和临时计算。后续可扩展手写。</p>
-        <MathToolbar compact onInsert={(snippet) => insertMathSnippet('draft', snippet)} />
-        <textarea
-          value={draft}
-          onChange={(e) => setDraft(e.target.value)}
-          placeholder="例如：先代入 x=3，再计算 y=2x+1..."
-        />
-      </aside>
-    </div>
-  )
-}
-
-function MathToolbar({ compact = false, onInsert }) {
-  return (
-    <div className={compact ? 'math-toolbar compact' : 'math-toolbar'} aria-label="插入数学表达式">
-      <span>插入数学表达式</span>
-      <div>
-        {mathSnippets.map((snippet) => (
-          <button key={snippet.label} type="button" onClick={() => onInsert(snippet.value)}>
-            {snippet.label}
-          </button>
-        ))}
-      </div>
+      <ScratchPad
+        purpose="draft"
+        className="draft-panel"
+        title="草稿区"
+        description="记录思路、步骤和临时计算。后续可扩展手写。"
+        value={draft}
+        onChange={setDraft}
+        placeholder="例如：先代入 x=3，再计算 y=2x+1..."
+      />
     </div>
   )
 }
