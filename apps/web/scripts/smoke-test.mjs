@@ -22,6 +22,8 @@ const requirements = [
   ['keyboard answer input', scratchPad.includes('onInput') && scratchPad.includes('mathFieldRef')],
   ['latex source keyboard fallback', scratchPad.includes('latex-source-input') && scratchPad.includes('LaTeX 源码')],
   ['draft scratchpad', app.includes('purpose="draft"') && app.includes('draft-panel')],
+  ['draft keyboard input', scratchPad.includes('draft-text-input') && scratchPad.includes('草稿输入')],
+  ['draft structured value', scratchPad.includes('draft-text-and-sketch-v1') && scratchPad.includes('syncDraftText')],
   ['sketch canvas draft engine', scratchPad.includes('react-sketch-canvas') && scratchPad.includes('<ReactSketchCanvas')],
   ['custom sketch toolbar', scratchPad.includes('scratch-pad-actions') && scratchPad.includes('setTool')],
   ['scratchpad controls', scratchPad.includes('全屏') && scratchPad.includes('放大') && scratchPad.includes('缩小') && scratchPad.includes('适应')],

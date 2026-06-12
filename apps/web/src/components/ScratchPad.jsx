@@ -34,6 +34,7 @@ export function ScratchPad({
   const [zoom, setZoom] = useState(1)
   const [fontSize, setFontSize] = useState(16)
   const isDraft = purpose === 'draft'
+  const draftState = isDraft ? parseDraftValue(value) : { text: '', paths: [] }
 
   function updateValue(nextValue) {
     onChange(nextValue)
@@ -94,7 +95,7 @@ export function ScratchPad({
   function clearAll() {
     if (isDraft) {
       canvasRef.current?.resetCanvas()
-      updateValue('')
+      updateValue(serializeDraftValue({ text: '', paths: [] }))
       return
     }
     updateValue('')
@@ -119,7 +120,11 @@ export function ScratchPad({
 
   async function syncSketchValue(paths) {
     if (!isDraft) return
-    updateValue(JSON.stringify({ format: 'react-sketch-canvas-paths-v1', paths }))
+    updateValue(serializeDraftValue({ ...draftState, paths }))
+  }
+
+  function syncDraftText(nextText) {
+    updateValue(serializeDraftValue({ ...draftState, text: nextText }))
   }
 
   function fitCanvas() {
@@ -213,18 +218,29 @@ export function ScratchPad({
       {!isDraft && <MathToolbar onInsert={insertMathSnippet} />}
 
       {isDraft ? (
-        <div className="sketch-stage" style={{ '--scratch-zoom': zoom }}>
-          <ReactSketchCanvas
-            ref={canvasRef}
-            className="draft-canvas"
-            width="100%"
-            height="100%"
-            strokeWidth={4}
-            eraserWidth={18}
-            strokeColor="#172033"
-            canvasColor="#fffdf7"
-            onChange={syncSketchValue}
-          />
+        <div className="draft-editor">
+          <label className="draft-text">
+            草稿输入
+            <textarea
+              className="draft-text-input"
+              value={draftState.text}
+              onInput={(event) => syncDraftText(event.currentTarget.value)}
+              placeholder={placeholder}
+            />
+          </label>
+          <div className="sketch-stage" style={{ '--scratch-zoom': zoom }}>
+            <ReactSketchCanvas
+              ref={canvasRef}
+              className="draft-canvas"
+              width="100%"
+              height="100%"
+              strokeWidth={4}
+              eraserWidth={18}
+              strokeColor="#172033"
+              canvasColor="#fffdf7"
+              onChange={syncSketchValue}
+            />
+          </div>
         </div>
       ) : (
         <div className="answer-editor">
@@ -251,4 +267,31 @@ export function ScratchPad({
       )}
     </section>
   )
+}
+
+function parseDraftValue(value) {
+  if (!value) return { text: '', paths: [] }
+  try {
+    const parsed = JSON.parse(value)
+    if (parsed?.format === 'draft-text-and-sketch-v1') {
+      return {
+        text: typeof parsed.text === 'string' ? parsed.text : '',
+        paths: Array.isArray(parsed.paths) ? parsed.paths : [],
+      }
+    }
+    if (parsed?.format === 'react-sketch-canvas-paths-v1') {
+      return { text: '', paths: Array.isArray(parsed.paths) ? parsed.paths : [] }
+    }
+  } catch {
+    return { text: value, paths: [] }
+  }
+  return { text: '', paths: [] }
+}
+
+function serializeDraftValue(draft) {
+  return JSON.stringify({
+    format: 'draft-text-and-sketch-v1',
+    text: draft.text || '',
+    paths: Array.isArray(draft.paths) ? draft.paths : [],
+  })
 }

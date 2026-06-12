@@ -298,8 +298,9 @@ textarea {
   padding: 18px;
 }
 
-.scratch-pad.fullscreen .sketch-stage {
+.scratch-pad.fullscreen .draft-editor {
   min-height: calc(100vh - 150px);
+  grid-template-rows: minmax(120px, 24vh) minmax(320px, 1fr);
 }
 
 .math-toolbar {
@@ -374,10 +375,32 @@ textarea {
   min-height: 100vh;
 }
 
+.draft-editor {
+  display: grid;
+  grid-template-rows: minmax(112px, 22vh) minmax(280px, 1fr);
+  gap: 12px;
+}
+
+.draft-text {
+  display: grid;
+  gap: 6px;
+  color: #41546f;
+  font-size: 13px;
+  min-height: 0;
+}
+
+.draft-text-input {
+  width: 100%;
+  min-height: 96px;
+  height: 100%;
+  resize: none;
+  background: #fbfcfe;
+}
+
 .draft-panel .sketch-stage {
   width: 100%;
-  min-height: calc(100vh - 172px);
-  height: calc(100vh - 172px);
+  min-height: 280px;
+  height: 100%;
   background: #fffdf7;
   border: 1px solid #d9dee8;
   border-radius: 8px;
@@ -418,12 +441,17 @@ textarea {
     box-shadow: 0 16px 48px rgba(15, 23, 42, 0.18);
   }
 
-  .draft-panel textarea {
-    min-height: 140px;
+  .draft-editor {
+    grid-template-rows: 88px 1fr;
+    gap: 8px;
+  }
+
+  .draft-text-input {
+    min-height: 88px;
   }
 
   .draft-panel .sketch-stage {
-    height: 132px;
-    min-height: 132px;
+    height: 96px;
+    min-height: 96px;
   }
 }
