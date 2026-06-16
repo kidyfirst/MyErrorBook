@@ -268,7 +268,7 @@ export function App() {
                 <ScratchPad
                   purpose="answer"
                   title="答题区"
-                  description="支持键盘输入、LaTeX 数学表达式和快捷公式按钮。"
+                  description="整块面板均可键盘输入，支持 LaTeX 数学表达式和快捷公式按钮。"
                   value={answer}
                   onChange={setAnswer}
                   placeholder="输入答案，例如 \\frac{1}{2}、x^2、\\sqrt{3}"
@@ -317,7 +317,7 @@ export function App() {
         purpose="draft"
         className="draft-panel"
         title="草稿区"
-        description="记录思路、步骤和临时计算。后续可扩展手写。"
+        description="整块面板均可键盘输入，用于记录思路、步骤和临时计算。"
         value={draft}
         onChange={setDraft}
         placeholder="例如：先代入 x=3，再计算 y=2x+1..."

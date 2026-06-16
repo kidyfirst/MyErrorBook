@@ -25,9 +25,6 @@ importers:
       react-dom:
         specifier: ^19.2.7
         version: 19.2.7(react@19.2.7)
-      react-sketch-canvas:
-        specifier: ^8.0.0
-        version: 8.0.0(react@19.2.7)
       typescript:
         specifier: ^5.9.3
         version: 5.9.3
@@ -566,12 +563,6 @@ packages:
     resolution: {integrity: sha512-QgT5//D3jfjJb6Gsjxv0Slpj23ip+HtOpnNgnb2S5zU3CB26G/IDPGoy4RJB42wzFE46DRsstbW6tKHoKbhAxw==}
     engines: {node: '>=0.10.0'}
 
-  react-sketch-canvas@8.0.0:
-    resolution: {integrity: sha512-ijCcGxZsmHFfYMHVPoVj5tDvKCrjFihsjApxv+iaEnNbYneBT9nAKQaDEE8QUZb457DWO/AFx5i29HPt24R/PA==}
-    engines: {node: '>=22.13.0'}
-    peerDependencies:
-      react: '>=18.0.0'
-
   react@19.2.7:
     resolution: {integrity: sha512-HNe9WslTbXmFK8o8cmwgAeJFSBvt1bPdHCVKtaaV+WlAN36mpT4hcRpwbf3fY56ar2oIXzsBpOAiIRHAdY0OlQ==}
     engines: {node: '>=0.10.0'}
@@ -1085,10 +1076,6 @@ snapshots:
       scheduler: 0.27.0
 
   react-refresh@0.18.0: {}
-
-  react-sketch-canvas@8.0.0(react@19.2.7):
-    dependencies:
-      react: 19.2.7
 
   react@19.2.7: {}
 
