@@ -22,6 +22,7 @@ const requirements = [
   ['answer panel is one big input', scratchPad.includes('scratch-panel-input') && scratchPad.includes('<math-field') && css.includes('min-height: 240px')],
   ['draft scratchpad', app.includes('purpose="draft"') && app.includes('draft-panel')],
   ['draft panel is one big input', scratchPad.includes('draft-panel-input') && scratchPad.includes('syncPanelLatex')],
+  ['multiline derivation input', scratchPad.includes('handlePanelKeyDown') && scratchPad.includes('ensureAlignedEnvironment') && scratchPad.includes('appendAlignedRow')],
   ['scratchpad controls', scratchPad.includes('全屏') && scratchPad.includes('放大') && scratchPad.includes('缩小')],
   ['scratchpad clearing', scratchPad.includes('整体清除') && scratchPad.includes('局部清除')],
   ['math input toolbar', mathToolbar.includes('math-toolbar') && mathToolbar.includes('插入数学表达式')],

@@ -27,6 +27,13 @@ export function ScratchPad({
     }
   }, [value])
 
+  useEffect(() => {
+    const panel = panelRef.current
+    if (!panel) return undefined
+    panel.addEventListener('keydown', handlePanelKeyDown)
+    return () => panel.removeEventListener('keydown', handlePanelKeyDown)
+  }, [value])
+
   function updateValue(nextValue) {
     onChange(nextValue)
   }
@@ -39,6 +46,29 @@ export function ScratchPad({
     updateValue(event.currentTarget.value)
   }
 
+  function handlePanelKeyDown(event) {
+    if (event.key !== 'Enter') return
+    event.preventDefault()
+    const panel = panelRef.current
+    if (!panel) return
+    const nextValue = appendAlignedRow(ensureAlignedEnvironment(panel.value || normalizePanelValue(value)))
+    panel.value = nextValue
+    if (typeof panel.executeCommand === 'function') {
+      panel.executeCommand('moveToNextPlaceholder')
+    }
+    updateValue(panel.value)
+  }
+
+  function ensureAlignedEnvironment(currentValue) {
+    if (/\\begin\{(?:aligned|align|gathered|lines)\}/.test(currentValue)) return currentValue
+    const initialValue = currentValue.trim() || '\\placeholder{}'
+    return `\\begin{aligned}${initialValue}\\end{aligned}`
+  }
+
+  function appendAlignedRow(currentValue) {
+    return currentValue.replace(/\\end\{aligned\}\s*$/, '\\\\\\\\\n\\placeholder{}\\end{aligned}')
+  }
+
   function insertMathSnippet(snippet) {
     const panel = panelRef.current
     if (!panel) {
@@ -46,8 +76,14 @@ export function ScratchPad({
       return
     }
     panel.focus()
-    panel.insert(snippet)
-    updateValue(panel.value)
+    if (typeof panel.insert === 'function') {
+      panel.insert(snippet)
+      updateValue(panel.value)
+      return
+    }
+    const nextValue = `${normalizePanelValue(value)}${snippet}`
+    panel.value = nextValue
+    updateValue(nextValue)
   }
 
   function clearAll() {
@@ -63,7 +99,9 @@ export function ScratchPad({
       return
     }
     panel.focus()
-    panel.executeCommand('deleteBackward')
+    if (typeof panel.executeCommand === 'function') {
+      panel.executeCommand('deleteBackward')
+    }
     updateValue(panel.value)
   }
 
