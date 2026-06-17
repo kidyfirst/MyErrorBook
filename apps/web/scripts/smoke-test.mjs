@@ -6,12 +6,21 @@ const app = readFileSync(join(root, 'src/App.jsx'), 'utf8')
 const css = readFileSync(join(root, 'src/styles.css'), 'utf8')
 let scratchPad = ''
 let mathToolbar = ''
+let richMathEditor = ''
 try {
   scratchPad = readFileSync(join(root, 'src/components/ScratchPad.jsx'), 'utf8')
-  mathToolbar = readFileSync(join(root, 'src/components/MathToolbar.jsx'), 'utf8')
 } catch {
   scratchPad = ''
+}
+try {
+  mathToolbar = readFileSync(join(root, 'src/components/MathToolbar.jsx'), 'utf8')
+} catch {
   mathToolbar = ''
+}
+try {
+  richMathEditor = readFileSync(join(root, 'src/components/RichMathEditor.jsx'), 'utf8')
+} catch {
+  richMathEditor = ''
 }
 
 const requirements = [
@@ -32,6 +41,11 @@ const requirements = [
   ['scratchpad clearing', scratchPad.includes('整体清除') && scratchPad.includes('局部清除')],
   ['math input toolbar', mathToolbar.includes('math-toolbar') && mathToolbar.includes('插入数学表达式')],
   ['latex snippets', mathToolbar.includes('\\\\frac{}{}') && mathToolbar.includes('\\\\sqrt{}') && mathToolbar.includes('^{}')],
+  ['tinymce math demo menu', app.includes("id: 'rich-math-demo'") && app.includes('公式编辑 Demo')],
+  ['tinymce5 rich editor', richMathEditor.includes('tinymce/tinymce') && richMathEditor.includes('tinymce.init') && richMathEditor.includes('mathliveFormula')],
+  ['mathlive formula plugin', richMathEditor.includes('<math-field') && richMathEditor.includes('openFormulaDialog')],
+  ['mathjax svg rendering', richMathEditor.includes('mathjax') && richMathEditor.includes('tex2svg') && richMathEditor.includes('math-formula-svg')],
+  ['editable svg formula image', richMathEditor.includes('data-latex') && richMathEditor.includes('dblclick') && richMathEditor.includes('replaceFormulaImage')],
   ['admin login', app.includes('/admin/login') || app.includes('管理员登录')],
   ['three column CSS', css.includes('grid-template-columns')],
   ['fullscreen CSS', css.includes('.scratch-pad.fullscreen')],

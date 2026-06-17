@@ -11,9 +11,11 @@
   "dependencies": {
     "@vitejs/plugin-react": "^5.1.1",
     "lucide-react": "^0.562.0",
+    "mathjax": "4.1.2",
     "mathlive": "^0.110.0",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
+    "tinymce": "5.10.9",
     "typescript": "^5.9.3",
     "vite": "^7.3.0"
   }

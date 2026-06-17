@@ -8,8 +8,10 @@ import {
   GraduationCap,
   LayoutDashboard,
   LogIn,
+  Sigma,
   Shield,
 } from 'lucide-react'
+import { RichMathEditor } from './components/RichMathEditor.jsx'
 import { ScratchPad } from './components/ScratchPad.jsx'
 
 const API = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080'
@@ -55,6 +57,7 @@ export function App() {
       { id: 'upload', label: '错题录入', icon: Camera },
       { id: 'list', label: '错题列表', icon: BookOpen },
       { id: 'daily', label: '每日一题', icon: ClipboardPenLine },
+      { id: 'rich-math-demo', label: '公式编辑 Demo', icon: Sigma },
       { id: 'stats', label: '统计看板', icon: ChartNoAxesColumn },
       { id: 'admin', label: '管理员入口', icon: Shield },
     ],
@@ -304,6 +307,8 @@ export function App() {
           </section>
         )}
 
+        {active === 'rich-math-demo' && <RichMathEditor />}
+
         {active === 'admin' && (
           <section className="panel">
             <LayoutDashboard size={28} />
@@ -333,6 +338,7 @@ function titleFor(active) {
     upload: '错题录入',
     list: '错题列表',
     daily: '每日一题',
+    'rich-math-demo': '公式编辑 Demo',
     stats: '统计看板',
     admin: '管理员入口',
   }[active]

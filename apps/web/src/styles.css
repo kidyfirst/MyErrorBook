@@ -428,6 +428,109 @@ textarea {
   font-size: 28px;
 }
 
+.rich-math-demo {
+  overflow: hidden;
+}
+
+.rich-math-layout {
+  height: 100%;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(300px, 0.85fr);
+  gap: 16px;
+}
+
+.rich-editor-pane,
+.rich-preview-pane {
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.rich-editor-note {
+  color: #667085;
+  font-size: 14px;
+  margin: 0 0 12px;
+}
+
+.rich-editor-pane .tox {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.rich-preview-pane {
+  border-left: 1px solid #e2e7ef;
+  padding-left: 16px;
+}
+
+.mathjax-preview {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+  border: 1px solid #d9dee8;
+  border-radius: 8px;
+  background: #fbfcfe;
+  padding: 14px;
+  line-height: 1.65;
+}
+
+.mathjax-preview img.math-formula-svg {
+  max-width: 100%;
+  vertical-align: middle;
+}
+
+.formula-dialog-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: grid;
+  place-items: center;
+  background: rgba(15, 23, 42, 0.35);
+}
+
+.formula-dialog {
+  width: min(720px, calc(100vw - 32px));
+  display: grid;
+  gap: 12px;
+  border: 1px solid #cfd6e2;
+  border-radius: 8px;
+  background: #ffffff;
+  padding: 16px;
+  box-shadow: 0 24px 72px rgba(15, 23, 42, 0.25);
+}
+
+.formula-dialog header,
+.formula-dialog footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.formula-dialog h2 {
+  margin: 0;
+}
+
+.formula-dialog label {
+  display: grid;
+  gap: 6px;
+  color: #41546f;
+  font-size: 13px;
+}
+
+.formula-dialog textarea {
+  min-height: 86px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+}
+
+.formula-mathlive-field {
+  display: block;
+  min-height: 120px;
+  border: 1px solid #cfd6e2;
+  border-radius: 8px;
+  padding: 12px;
+}
+
 .draft-panel {
   border-width: 0 0 0 1px;
   padding: 20px;
@@ -470,5 +573,14 @@ textarea {
 
   .draft-panel-input {
     min-height: 116px;
+  }
+
+  .rich-math-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .rich-preview-pane {
+    border-left: 0;
+    padding-left: 0;
   }
 }
