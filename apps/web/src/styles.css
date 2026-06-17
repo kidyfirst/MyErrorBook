@@ -8,6 +8,13 @@
   box-sizing: border-box;
 }
 
+html,
+body,
+#root {
+  height: 100vh;
+  overflow: hidden;
+}
+
 body {
   margin: 0;
 }
@@ -20,10 +27,11 @@ select {
 }
 
 .app-shell {
-  min-height: 100vh;
+  height: 100vh;
   display: grid;
   grid-template-columns: 248px minmax(420px, 1fr) 320px;
   background: #eef1f5;
+  overflow: hidden;
 }
 
 .sidebar,
@@ -39,6 +47,8 @@ select {
   display: flex;
   flex-direction: column;
   gap: 18px;
+  min-height: 0;
+  overflow: hidden;
 }
 
 .brand,
@@ -105,6 +115,11 @@ select {
 .workbench {
   padding: 22px;
   min-width: 0;
+  min-height: 0;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
 .topbar {
@@ -113,6 +128,7 @@ select {
   gap: 16px;
   align-items: start;
   margin-bottom: 18px;
+  flex: 0 0 auto;
 }
 
 .topbar h1 {
@@ -138,7 +154,9 @@ select {
   border: 1px solid #d9dee8;
   border-radius: 8px;
   padding: 18px;
-  min-height: 420px;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
 }
 
 .panel h2 {
@@ -211,6 +229,19 @@ textarea {
   line-height: 1.55;
 }
 
+.question-panel {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.question-panel h2,
+.question-panel .question-text,
+.question-panel .feedback,
+.question-panel > .primary {
+  flex: 0 0 auto;
+}
+
 .scratch-panel-input {
   display: block;
   width: 100%;
@@ -221,7 +252,8 @@ textarea {
   background: white;
   color: #172033;
   line-height: 1.5;
-  overflow: auto;
+  overflow-x: auto;
+  overflow-y: auto;
 }
 
 .scratch-panel-input:focus-within {
@@ -235,6 +267,24 @@ textarea {
 
 .scratch-pad {
   min-width: 0;
+  min-height: 0;
+}
+
+.scratch-pad-answer {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.scratch-pad-answer .scratch-pad-header,
+.scratch-pad-answer .math-toolbar {
+  flex: 0 0 auto;
+}
+
+.scratch-pad-answer .scratch-panel-input {
+  flex: 1 1 auto;
+  min-height: 0;
 }
 
 .scratch-pad-header {
@@ -381,11 +431,16 @@ textarea {
 .draft-panel {
   border-width: 0 0 0 1px;
   padding: 20px;
-  min-height: 100vh;
+  height: 100vh;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
 .draft-panel-input {
-  min-height: calc(100vh - 210px);
+  flex: 1 1 auto;
+  min-height: 0;
   background: #fffdf7;
 }
 
