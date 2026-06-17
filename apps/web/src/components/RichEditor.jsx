@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { MathfieldElement } from 'mathlive'
+import { Eraser, Maximize2, Minimize2, Minus, Plus, Trash2 } from 'lucide-react'
 import tinymce from 'tinymce/tinymce'
 import 'tinymce/icons/default'
 import 'tinymce/themes/silver'
@@ -15,7 +16,7 @@ import 'tinymce/skins/content/default/content.min.css'
 
 MathfieldElement.fontsDirectory = '/mathlive-fonts'
 
-const initialContent = `
+const demoContent = `
   <p>解方程：</p>
   <p><strong>2x + 5 = 17</strong></p>
   <p>点击工具栏“公式”插入数学公式，双击公式图片可继续编辑。</p>
@@ -24,13 +25,30 @@ const initialContent = `
 let pluginRegistered = false
 let mathJaxPromise = null
 
-export function RichMathEditor() {
-  const editorHostId = useMemo(() => `rich-math-editor-${Math.random().toString(36).slice(2)}`, [])
+export function RichEditor({
+  purpose = 'demo',
+  title = '富文本编辑器',
+  description,
+  value,
+  onChange,
+  placeholder = '请输入答题过程，支持文字、换行、表格和数学公式。',
+  className = '',
+  contextTitle,
+  contextText,
+  showPreview = false,
+  previewTitle = '最终预览',
+}) {
+  const editorHostId = useMemo(() => `rich-editor-${Math.random().toString(36).slice(2)}`, [])
+  const editorRef = useRef(null)
   const mathFieldRef = useRef(null)
   const previewRef = useRef(null)
-  const [content, setContent] = useState(initialContent)
+  const controlled = value !== undefined
+  const [internalContent, setInternalContent] = useState(controlled ? '' : demoContent)
   const [dialog, setDialog] = useState(null)
   const [latex, setLatex] = useState('\\frac{1}{2}x^2')
+  const [fontSize, setFontSize] = useState(purpose === 'draft' ? 15 : 16)
+  const [isFullscreen, setIsFullscreen] = useState(false)
+  const content = controlled ? value : internalContent
 
   useEffect(() => {
     registerMathLiveFormulaPlugin()
@@ -39,25 +57,24 @@ export function RichMathEditor() {
 
     tinymce.init({
       target: host,
-      height: 430,
+      height: '100%',
       menubar: false,
       skin: false,
       content_css: false,
+      branding: false,
+      resize: false,
+      placeholder,
       plugins: 'lists link table paste preview code mathliveFormula',
       toolbar: 'mathliveFormula | undo redo | bold italic underline | bullist numlist | table link | code preview',
       toolbar_mode: 'wrap',
-      content_style: `
-        body { font-family: Inter, system-ui, sans-serif; font-size: 15px; line-height: 1.65; }
-        img.math-formula-svg { max-width: 100%; vertical-align: middle; cursor: pointer; }
-        img.math-formula-svg[data-latex] { outline: 1px solid transparent; border-radius: 4px; }
-        img.math-formula-svg[data-latex]:hover { outline-color: #9db2d5; }
-      `,
+      content_style: buildEditorContentStyle(fontSize),
       setup(editor) {
+        editorRef.current = editor
         editor.on('init', () => {
-          editor.setContent(content)
+          editor.setContent(content || '')
         })
-        editor.on('change keyup setcontent undo redo', () => {
-          setContent(editor.getContent())
+        editor.on('change keyup setcontent undo redo input', () => {
+          updateContent(editor.getContent())
         })
       },
     })
@@ -65,8 +82,23 @@ export function RichMathEditor() {
     return () => {
       const editor = tinymce.get(editorHostId)
       if (editor) editor.remove()
+      if (editorRef.current?.id === editorHostId) editorRef.current = null
     }
   }, [editorHostId])
+
+  useEffect(() => {
+    const editor = editorRef.current
+    if (editor && editor.initialized && editor.getContent() !== (content || '')) {
+      editor.setContent(content || '')
+    }
+  }, [content])
+
+  useEffect(() => {
+    const editor = editorRef.current
+    if (editor?.dom) {
+      editor.dom.setStyle(editor.getBody(), 'fontSize', `${fontSize}px`)
+    }
+  }, [fontSize])
 
   useEffect(() => {
     function handleOpenFormula(event) {
@@ -85,8 +117,40 @@ export function RichMathEditor() {
   }, [])
 
   useEffect(() => {
-    renderPreviewMath(previewRef.current)
-  }, [content])
+    if (showPreview) renderPreviewMath(previewRef.current)
+  }, [content, showPreview])
+
+  function updateContent(nextContent) {
+    if (!controlled) setInternalContent(nextContent)
+    onChange?.(nextContent)
+  }
+
+  function focusEditor() {
+    requestAnimationFrame(() => editorRef.current?.focus())
+  }
+
+  function clearAll() {
+    const editor = editorRef.current
+    editor?.setContent('')
+    updateContent('')
+    focusEditor()
+  }
+
+  function clearSelection() {
+    const editor = editorRef.current
+    if (!editor) {
+      updateContent('')
+      return
+    }
+    editor.focus()
+    const selectedHtml = editor.selection.getContent()
+    if (selectedHtml) {
+      editor.selection.setContent('')
+    } else {
+      editor.execCommand('Delete')
+    }
+    updateContent(editor.getContent())
+  }
 
   function syncFormulaLatex(event) {
     setLatex(event.currentTarget.value)
@@ -98,30 +162,78 @@ export function RichMathEditor() {
     if (!editor) return
     const html = await buildFormulaImageHtml(latex)
     replaceFormulaImage(editor, dialog.target, html)
-    setContent(editor.getContent())
+    updateContent(editor.getContent())
     setDialog(null)
   }
 
-  return (
-    <section className="panel rich-math-demo">
-      <div className="rich-math-layout">
-        <div className="rich-editor-pane">
-          <h2>公式富文本编辑 Demo</h2>
-          <p className="rich-editor-note">
-            TinyMCE 5 作为富文本编辑器，MathLive 负责公式录入，MathJax 负责 SVG 公式渲染。
-          </p>
-          <textarea id={editorHostId} />
+  const editorPanel = (
+    <section
+      className={[
+        'rich-editor',
+        `rich-editor-${purpose}`,
+        isFullscreen ? 'fullscreen' : '',
+        className,
+      ].filter(Boolean).join(' ')}
+    >
+      <header className="rich-editor-header">
+        <div>
+          <h2>{title}</h2>
+          {description && <p>{description}</p>}
         </div>
+        <div className="rich-editor-actions">
+          <button type="button" onClick={() => setFontSize((size) => Math.max(13, size - 1))}>
+            <Minus size={15} />
+            缩小
+          </button>
+          <button type="button" onClick={() => setFontSize((size) => Math.min(30, size + 1))}>
+            <Plus size={15} />
+            放大
+          </button>
+          <button type="button" onClick={clearSelection}>
+            <Eraser size={15} />
+            局部清除
+          </button>
+          <button type="button" onClick={clearAll}>
+            <Trash2 size={15} />
+            整体清除
+          </button>
+          <button type="button" onClick={() => setIsFullscreen((current) => !current)}>
+            {isFullscreen ? <Minimize2 size={15} /> : <Maximize2 size={15} />}
+            全屏
+          </button>
+        </div>
+      </header>
 
-        <aside className="rich-preview-pane">
-          <h2>最终预览</h2>
-          <div
-            ref={previewRef}
-            className="mathjax-preview"
-            dangerouslySetInnerHTML={{ __html: content }}
-          />
-        </aside>
+      {isFullscreen && contextText && (
+        <section className="fullscreen-context" aria-label={contextTitle || '当前题目'}>
+          <span>{contextTitle || '当前题目'}</span>
+          <p>{contextText}</p>
+        </section>
+      )}
+
+      <div className="rich-editor-body">
+        <textarea id={editorHostId} />
       </div>
+    </section>
+  )
+
+  return (
+    <>
+      {showPreview ? (
+        <section className="panel rich-math-demo">
+          <div className="rich-math-layout">
+            {editorPanel}
+            <aside className="rich-preview-pane">
+              <h2>{previewTitle}</h2>
+              <div
+                ref={previewRef}
+                className="mathjax-preview"
+                dangerouslySetInnerHTML={{ __html: content }}
+              />
+            </aside>
+          </div>
+        </section>
+      ) : editorPanel}
 
       {dialog && (
         <div className="formula-dialog-backdrop">
@@ -155,8 +267,18 @@ export function RichMathEditor() {
           </div>
         </div>
       )}
-    </section>
+    </>
   )
+}
+
+function buildEditorContentStyle(fontSize) {
+  return `
+    body { font-family: Inter, system-ui, sans-serif; font-size: ${fontSize}px; line-height: 1.65; }
+    body, p { margin-top: 0; }
+    img.math-formula-svg { max-width: 100%; vertical-align: middle; cursor: pointer; }
+    img.math-formula-svg[data-latex] { outline: 1px solid transparent; border-radius: 4px; }
+    img.math-formula-svg[data-latex]:hover { outline-color: #9db2d5; }
+  `
 }
 
 function replaceFormulaImage(editor, target, html) {

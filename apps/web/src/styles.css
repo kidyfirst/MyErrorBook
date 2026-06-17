@@ -242,6 +242,11 @@ textarea {
   flex: 0 0 auto;
 }
 
+.question-panel > .rich-editor {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
 .scratch-panel-input {
   display: block;
   width: 100%;
@@ -440,20 +445,78 @@ textarea {
   gap: 16px;
 }
 
-.rich-editor-pane,
+.rich-editor,
 .rich-preview-pane {
   min-height: 0;
   display: flex;
   flex-direction: column;
 }
 
-.rich-editor-note {
+.rich-editor-header {
+  display: grid;
+  gap: 12px;
+  flex: 0 0 auto;
+}
+
+.rich-editor-header h2 {
+  margin: 0 0 4px;
+}
+
+.rich-editor-header p {
   color: #667085;
   font-size: 14px;
   margin: 0 0 12px;
 }
 
-.rich-editor-pane .tox {
+.rich-editor-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.rich-editor-actions button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid #cfd6e2;
+  background: white;
+  border-radius: 6px;
+  padding: 7px 9px;
+  cursor: pointer;
+  color: #27364d;
+  font-size: 13px;
+}
+
+.rich-editor-actions button:hover {
+  border-color: #172033;
+  background: #eef1f5;
+}
+
+.rich-editor-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.rich-editor-body .tox-tinymce {
+  flex: 1 1 auto;
+  min-height: 0;
+  border-color: #cfd6e2;
+  border-radius: 8px;
+}
+
+.rich-editor-body .tox {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.rich-editor-body textarea {
+  flex: 1 1 auto;
+}
+
+.rich-editor-answer {
   flex: 1 1 auto;
   min-height: 0;
 }
@@ -541,10 +604,34 @@ textarea {
   overflow: hidden;
 }
 
+.rich-editor.draft-panel {
+  gap: 0;
+}
+
 .draft-panel-input {
   flex: 1 1 auto;
   min-height: 0;
   background: #fffdf7;
+}
+
+.draft-panel .rich-editor-body {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.draft-panel .tox .tox-edit-area__iframe {
+  background: #fffdf7;
+}
+
+.rich-editor.fullscreen {
+  position: fixed;
+  inset: 16px;
+  z-index: 30;
+  border: 1px solid #cfd6e2;
+  border-radius: 8px;
+  box-shadow: 0 24px 72px rgba(15, 23, 42, 0.24);
+  background: #f8fafc;
+  padding: 18px;
 }
 
 @media (max-width: 980px) {

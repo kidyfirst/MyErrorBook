@@ -11,8 +11,7 @@ import {
   Sigma,
   Shield,
 } from 'lucide-react'
-import { RichMathEditor } from './components/RichMathEditor.jsx'
-import { ScratchPad } from './components/ScratchPad.jsx'
+import { RichEditor } from './components/RichEditor.jsx'
 
 const API = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080'
 
@@ -268,13 +267,13 @@ export function App() {
             {daily ? (
               <>
                 <p className="question-text">{daily.questionText}</p>
-                <ScratchPad
+                <RichEditor
                   purpose="answer"
                   title="答题区"
-                  description="整块面板均可键盘输入，支持 LaTeX 数学表达式和快捷公式按钮。"
+                  description="整块面板均可键盘输入，支持富文本、换行推导和数学公式。"
                   value={answer}
                   onChange={setAnswer}
-                  placeholder="输入答案，例如 \\frac{1}{2}、x^2、\\sqrt{3}"
+                  placeholder="输入答案，例如分步推导、表格、公式或文字说明。"
                 />
                 <button className="primary" onClick={submitAnswer}>提交批改</button>
                 {feedback && (
@@ -307,7 +306,13 @@ export function App() {
           </section>
         )}
 
-        {active === 'rich-math-demo' && <RichMathEditor />}
+        {active === 'rich-math-demo' && (
+          <RichEditor
+            title="公式富文本编辑 Demo"
+            description="TinyMCE 5 作为富文本编辑器，MathLive 负责公式录入，MathJax 负责 SVG 公式渲染。"
+            showPreview
+          />
+        )}
 
         {active === 'admin' && (
           <section className="panel">
@@ -318,11 +323,11 @@ export function App() {
         )}
       </main>
 
-      <ScratchPad
+      <RichEditor
         purpose="draft"
         className="draft-panel"
         title="草稿区"
-        description="整块面板均可键盘输入，用于记录思路、步骤和临时计算。"
+        description="整块面板均可键盘输入，用于记录思路、步骤、公式和临时计算。"
         value={draft}
         onChange={setDraft}
         placeholder="例如：先代入 x=3，再计算 y=2x+1..."

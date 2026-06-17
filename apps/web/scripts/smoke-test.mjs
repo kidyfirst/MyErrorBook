@@ -6,7 +6,7 @@ const app = readFileSync(join(root, 'src/App.jsx'), 'utf8')
 const css = readFileSync(join(root, 'src/styles.css'), 'utf8')
 let scratchPad = ''
 let mathToolbar = ''
-let richMathEditor = ''
+let richEditor = ''
 try {
   scratchPad = readFileSync(join(root, 'src/components/ScratchPad.jsx'), 'utf8')
 } catch {
@@ -18,37 +18,32 @@ try {
   mathToolbar = ''
 }
 try {
-  richMathEditor = readFileSync(join(root, 'src/components/RichMathEditor.jsx'), 'utf8')
+  richEditor = readFileSync(join(root, 'src/components/RichEditor.jsx'), 'utf8')
 } catch {
-  richMathEditor = ''
+  richEditor = ''
 }
 
 const requirements = [
   ['left menu', app.includes('错题录入') && app.includes('每日一题')],
-  ['scratchpad component', scratchPad.includes('export function ScratchPad')],
-  ['mathlive dependency', scratchPad.includes('mathlive') && scratchPad.includes('MathfieldElement')],
-  ['answer scratchpad', app.includes('purpose="answer"') && scratchPad.includes('answer-panel-input')],
-  ['answer panel is one big input', scratchPad.includes('scratch-panel-input') && scratchPad.includes('<math-field') && css.includes('min-height: 240px')],
-  ['draft scratchpad', app.includes('purpose="draft"') && app.includes('draft-panel')],
-  ['draft fullscreen question context', app.includes('contextText={daily?.questionText}') && scratchPad.includes('fullscreen-context')],
-  ['draft panel is one big input', scratchPad.includes('draft-panel-input') && scratchPad.includes('syncPanelLatex')],
-  ['multiline derivation input', scratchPad.includes('handlePanelKeyDown') && scratchPad.includes('ensureAlignedEnvironment') && scratchPad.includes('appendAlignedRow')],
   ['page does not scroll', css.includes('overflow: hidden') && css.includes('height: 100vh')],
   ['daily panel flex layout', css.includes('.question-panel') && css.includes('display: flex') && css.includes('flex-direction: column')],
-  ['answer input fills remaining height', css.includes('.scratch-pad-answer') && css.includes('flex: 1') && css.includes('min-height: 0')],
-  ['input panels scroll internally', css.includes('overflow-y: auto') && css.includes('.draft-panel-input')],
-  ['scratchpad controls', scratchPad.includes('全屏') && scratchPad.includes('放大') && scratchPad.includes('缩小')],
-  ['scratchpad clearing', scratchPad.includes('整体清除') && scratchPad.includes('局部清除')],
-  ['math input toolbar', mathToolbar.includes('math-toolbar') && mathToolbar.includes('插入数学表达式')],
-  ['latex snippets', mathToolbar.includes('\\\\frac{}{}') && mathToolbar.includes('\\\\sqrt{}') && mathToolbar.includes('^{}')],
+  ['rich editor component', richEditor.includes('export function RichEditor')],
+  ['answer rich editor', app.includes('purpose="answer"') && app.includes('<RichEditor')],
+  ['draft rich editor', app.includes('purpose="draft"') && app.includes('draft-panel') && app.includes('<RichEditor')],
+  ['draft fullscreen question context', app.includes('contextText={daily?.questionText}') && richEditor.includes('fullscreen-context')],
+  ['answer input fills remaining height', css.includes('.rich-editor-answer') && css.includes('flex: 1') && css.includes('min-height: 0')],
+  ['input panels scroll internally', css.includes('overflow-y: auto') && css.includes('.rich-editor-body')],
+  ['rich editor controls', richEditor.includes('全屏') && richEditor.includes('放大') && richEditor.includes('缩小')],
+  ['rich editor clearing', richEditor.includes('整体清除') && richEditor.includes('局部清除')],
   ['tinymce math demo menu', app.includes("id: 'rich-math-demo'") && app.includes('公式编辑 Demo')],
-  ['tinymce5 rich editor', richMathEditor.includes('tinymce/tinymce') && richMathEditor.includes('tinymce.init') && richMathEditor.includes('mathliveFormula')],
-  ['mathlive formula plugin', richMathEditor.includes('<math-field') && richMathEditor.includes('openFormulaDialog')],
-  ['mathjax svg rendering', richMathEditor.includes('mathjax') && richMathEditor.includes('tex2svg') && richMathEditor.includes('math-formula-svg')],
-  ['editable svg formula image', richMathEditor.includes('data-latex') && richMathEditor.includes('dblclick') && richMathEditor.includes('replaceFormulaImage')],
+  ['tinymce5 rich editor', richEditor.includes('tinymce/tinymce') && richEditor.includes('tinymce.init') && richEditor.includes('mathliveFormula')],
+  ['mathlive formula plugin', richEditor.includes('<math-field') && richEditor.includes('openFormulaDialog')],
+  ['mathjax svg rendering', richEditor.includes('mathjax') && richEditor.includes('tex2svg') && richEditor.includes('math-formula-svg')],
+  ['editable svg formula image', richEditor.includes('data-latex') && richEditor.includes('dblclick') && richEditor.includes('replaceFormulaImage')],
+  ['no rich math editor references', !app.includes('RichMathEditor') && !richEditor.includes('RichMathEditor')],
   ['admin login', app.includes('/admin/login') || app.includes('管理员登录')],
   ['three column CSS', css.includes('grid-template-columns')],
-  ['fullscreen CSS', css.includes('.scratch-pad.fullscreen')],
+  ['fullscreen CSS', css.includes('.rich-editor.fullscreen')],
 ]
 
 const failures = requirements.filter(([, ok]) => !ok)
