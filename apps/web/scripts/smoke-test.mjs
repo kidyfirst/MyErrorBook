@@ -21,6 +21,7 @@ const requirements = [
   ['answer scratchpad', app.includes('purpose="answer"') && scratchPad.includes('answer-panel-input')],
   ['answer panel is one big input', scratchPad.includes('scratch-panel-input') && scratchPad.includes('<math-field') && css.includes('min-height: 240px')],
   ['draft scratchpad', app.includes('purpose="draft"') && app.includes('draft-panel')],
+  ['draft fullscreen question context', app.includes('contextText={daily?.questionText}') && scratchPad.includes('fullscreen-context')],
   ['draft panel is one big input', scratchPad.includes('draft-panel-input') && scratchPad.includes('syncPanelLatex')],
   ['multiline derivation input', scratchPad.includes('handlePanelKeyDown') && scratchPad.includes('ensureAlignedEnvironment') && scratchPad.includes('appendAlignedRow')],
   ['scratchpad controls', scratchPad.includes('全屏') && scratchPad.includes('放大') && scratchPad.includes('缩小')],

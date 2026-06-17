@@ -321,6 +321,8 @@ export function App() {
         value={draft}
         onChange={setDraft}
         placeholder="例如：先代入 x=3，再计算 y=2x+1..."
+        contextTitle="当前题目"
+        contextText={daily?.questionText}
       />
     </div>
   )

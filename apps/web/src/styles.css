@@ -286,6 +286,32 @@ textarea {
   min-height: calc(100vh - 170px);
 }
 
+.scratch-pad.fullscreen:has(.fullscreen-context) .scratch-panel-input {
+  min-height: calc(100vh - 270px);
+}
+
+.fullscreen-context {
+  border: 1px solid #d9dee8;
+  border-radius: 8px;
+  background: #ffffff;
+  padding: 12px 14px;
+  margin: 10px 0 12px;
+}
+
+.fullscreen-context span {
+  display: block;
+  color: #667085;
+  font-size: 13px;
+  margin-bottom: 6px;
+}
+
+.fullscreen-context p {
+  margin: 0;
+  color: #172033;
+  font-size: 18px;
+  line-height: 1.55;
+}
+
 .math-toolbar {
   border: 1px solid #e2e7ef;
   background: #f8fafc;

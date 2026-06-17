@@ -12,6 +12,8 @@ export function ScratchPad({
   value,
   onChange,
   placeholder,
+  contextTitle,
+  contextText,
   className = '',
 }) {
   const panelRef = useRef(null)
@@ -142,6 +144,13 @@ export function ScratchPad({
           </button>
         </div>
       </header>
+
+      {isFullscreen && contextText && (
+        <section className="fullscreen-context" aria-label={contextTitle || '当前题目'}>
+          <span>{contextTitle || '当前题目'}</span>
+          <p>{contextText}</p>
+        </section>
+      )}
 
       <MathToolbar compact={isDraft} onInsert={insertMathSnippet} />
 
